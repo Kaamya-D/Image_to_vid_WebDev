@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to Video Converter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <h1>Image to Video Converter</h1>
+        <div id="auth-links">
+            <a href="#login">Login</a>
+            <a href="#signup">Sign Up</a>
+        </div>
+    </nav>
+
+    <!-- Upload Images Section -->
+    <section id="upload-section">
+        <h2>Upload Images</h2>
+        <div id="upload-container">
+            <label for="image-upload">Drag and drop or click to upload images:</label>
+            <input type="file" id="image-upload" accept="image/*" multiple>
+        </div>
+    </section>
+
+    <!-- Video Customization Section -->
+    <section id="customization-section">
+        <h2>Video Customization</h2>
+        <div>
+            <label>Select Background Music:</label>
+            <input type="file" accept="audio/*" id="background-music">
+        </div>
+        <div>
+            <label for="image-duration">Set Duration for Each Image (seconds):</label>
+            <input type="number" id="image-duration" min="1" value="3">
+        </div>
+        <div>
+            <label for="transition-effect">Transition Effect:</label>
+            <select id="transition-effect">
+                <option value="none">None</option>
+                <option value="fade">Fade</option>
+                <option value="slide">Slide</option>
+            </select>
+        </div>
+    </section>
+
+    <!-- Preview Section -->
+    <section id="preview-section">
+        <h2>Preview Video</h2>
+        <div id="preview-container">
+            <p>Video preview will be displayed here...</p>
+            <button id="play-btn">Play</button>
+            <button id="pause-btn">Pause</button>
+            <button id="rewind-btn">Rewind</button>
+        </div>
+    </section>
+
+    <!-- Output Settings Section -->
+    <section id="output-settings">
+        <h2>Output Settings</h2>
+        <div>
+            <label for="video-resolution">Select Video Resolution:</label>
+            <select id="video-resolution">
+                <option value="720p">720p</option>
+                <option value="1080p">1080p</option>
+                <option value="4K">4K</option>
+            </select>
+        </div>
+        <div>
+            <label for="video-quality">Select Video Quality:</label>
+            <select id="video-quality">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+        </div>
+    </section>
+
+    
+    <script src="script.js"></script>
+</body>
+</html>
+
+window.onload = function() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (isLoggedIn) {
+        document.getElementById('nav-links').innerHTML = `
+            <a href="#landing-page">Home</a>
+            <a href="#converter-section">Image to Video Converter</a>
+            <a href="logout.html">Logout</a>
+        `;
+    }
+};
+

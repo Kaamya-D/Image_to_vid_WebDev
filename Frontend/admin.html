@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - View Users</title>
+</head>
+<body>
+    <h1>Admin Panel</h1>
+    <h2>List of Registered Users</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody id="user-list"></tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const userList = document.getElementById('user-list');
+
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                const usernameCell = document.createElement('td');
+                const emailCell = document.createElement('td');
+                usernameCell.textContent = user.username;
+                emailCell.textContent = user.email;
+                row.appendChild(usernameCell);
+                row.appendChild(emailCell);
+                userList.appendChild(row);
+            });
+        });
+    </script>
+</body>
+</html>
