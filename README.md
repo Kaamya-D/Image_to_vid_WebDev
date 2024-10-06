@@ -12,3 +12,6 @@ Login and Signup
 Error validation during login
 ![image](https://github.com/user-attachments/assets/6ac31de7-79de-4846-86f1-11d1bab8a8b6)
 ![image](https://github.com/user-attachments/assets/6a5f104d-97ee-49d5-82ff-d6a03a3787d6)
+
+![image](https://github.com/user-attachments/assets/c5a30df8-7b05-48f8-adc4-ad6ee54f5ab5)
+![image](https://github.com/user-attachments/assets/c9c0d00b-821b-4b4c-8d92-ada0314aab92)
