@@ -2,19 +2,22 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>PixPolish - Home</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 
 <body>
     <!-- Navigation Bar -->
     <nav>
-        <h1>PixPolish</h1>
+        <div class="logo">
+            <h1><i class="fas fa-image"></i> PixPolish</h1>
+        </div>
         <div id="nav-links">
             <a href="#landing-page">Home</a>
-            <a href="#converter-section">Image to Video Converter</a>
+            <a href="#converter-section">Image to Video</a>
             <a href="login.html">Login</a>
             <a href="signup.html">Sign Up</a>
         </div>
@@ -23,86 +26,547 @@
     <!-- Landing Page Section -->
     <section id="landing-page">
         <div id="landing-content">
-            <h1>Welcome to PixPolish</h1>
-            <p>A click away from the abode of creativity</p>
+            <h1>Transform Your Images Into Stunning Videos</h1>
+            <p>Create professional slideshows with just a few clicks</p>
             <div class="buttons">
-                <button class="feature-btn" onclick="document.getElementById('converter-section').scrollIntoView()">Image to Video Converter</button>
+                <button class="feature-btn" onclick="document.getElementById('converter-section').scrollIntoView({behavior: 'smooth'})">
+                    Get Started <i class="fas fa-arrow-right"></i>
+                </button>
             </div>
         </div>
     </section>
 
     <!-- Image to Video Converter Section -->
     <section id="converter-section">
-        <h2>Image to Video Converter</h2>
-
-        <!-- Upload Images Section -->
-        <div id="upload-section">
-            <h3>Upload Images</h3>
-            <div id="drop-zone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)">
-                <p>Drag and drop or click to upload images:</p>
-                <input type="file" id="image-upload" accept="image/*" multiple onchange="previewImages()">
-            </div>
-            <div id="preview-images">
-                <h4>Select Images for Video:</h4>
-                <div id="image-grid"></div>
-            </div>
+        <div class="section-header">
+            <h2>Image to Video Converter</h2>
+            <p>Upload your images, customize your video, and create beautiful slideshows</p>
         </div>
 
-        <!-- Video Customization Section -->
-        <div id="customization-section">
-            <h3>Video Customization</h3>
-            <div>
-                <label>Select Background Music:</label>
-                <input type="file" accept="audio/*" id="background-music">
+        <div class="converter-container">
+            <!-- Upload Images Section -->
+            <div id="upload-section" class="panel">
+                <div class="panel-header">
+                    <i class="fas fa-upload"></i>
+                    <h3>Upload Images</h3>
+                </div>
+                <div id="drop-zone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Drag and drop images here</p>
+                    <p>or</p>
+                    <label for="image-upload" class="upload-btn">Browse Files</label>
+                    <input type="file" id="image-upload" accept="image/*" multiple onchange="previewImages()" />
+                </div>
+                <div id="preview-images">
+                    <div class="settings-header">
+                        <h4>Selected Images:</h4>
+                        <div class="settings-toggle">
+                            <span>Show Individual Settings</span>
+                            <label class="switch">
+                                <input type="checkbox" id="show-individual-settings" onchange="toggleIndividualSettings()">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div id="image-grid-container">
+                        <div id="image-grid"></div>
+                    </div>
+                </div>
             </div>
-            <div>
-                <label for="image-duration">Set Duration for Each Image (seconds):</label>
-                <input type="number" id="image-duration" min="1" value="3">
-            </div>
-            <div>
-                <label for="transition-effect">Transition Effect:</label>
-                <select id="transition-effect">
-                    <option value="none">None</option>
-                    <option value="fade">Fade</option>
-                    <option value="slide">Slide</option>
-                </select>
-            </div>
-        </div>
 
-        <!-- Preview Section -->
-        <div id="preview-section">
-            <h3>Preview Video</h3>
-            <video id="video-preview" controls></video>
-            <div class="video-controls">
-                <button id="play-btn" onclick="playVideo()">Play</button>
-                <button id="pause-btn" onclick="pauseVideo()">Pause</button>
-                <button id="rewind-btn" onclick="rewindVideo()">Rewind</button>
-            </div>
-        </div>
+            <!-- Video Customization Section -->
+            <div id="customization-section" class="panel">
+                <div class="panel-header">
+                    <i class="fas fa-sliders-h"></i>
+                    <h3>Global Settings</h3>
+                </div>
+                <div class="global-settings settings-group">
+                    <div class="setting-item">
+                        <label><i class="fas fa-music"></i> Background Music:</label>
+                        <div class="file-input-wrapper">
+                            <label for="background-music" class="upload-btn">Choose Audio</label>
+                            <input type="file" accept="audio/*" id="background-music" />
+                            <span id="music-file-name">No file chosen</span>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label for="global-image-duration"><i class="fas fa-clock"></i> Default Duration per Image:</label>
+                        <div class="slider-container">
+                            <input type="range" id="global-image-duration" min="1" max="10" value="3" oninput="updateGlobalDuration(this.value)" />
+                            <span id="global-duration-value">3s</span>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label for="global-transition-effect"><i class="fas fa-film"></i> Default Transition Effect:</label>
+                        <select id="global-transition-effect" onchange="updateGlobalTransition(this.value)">
+                            <option value="none">None</option>
+                            <option value="fade" selected>Fade</option>
+                            <option value="slide">Slide</option>
+                            <option value="zoom">Zoom</option>
+                            <option value="blur">Blur</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <button id="apply-to-all" class="secondary-btn" onclick="applySettingsToAll()">
+                            <i class="fas fa-sync"></i> Apply to All Images
+                        </button>
+                    </div>
+                </div>
 
-        <!-- Output Settings Section -->
-        <div id="output-settings">
-            <h3>Output Settings</h3>
-            <div>
-                <label for="video-resolution">Select Video Resolution:</label>
-                <select id="video-resolution">
-                    <option value="720p">720p</option>
-                    <option value="1080p">1080p</option>
-                    <option value="4K">4K</option>
-                </select>
+                <div class="panel-header">
+                    <i class="fas fa-cog"></i>
+                    <h3>Output Settings</h3>
+                </div>
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <label for="video-resolution"><i class="fas fa-tv"></i> Resolution:</label>
+                        <select id="video-resolution">
+                            <option value="720p">HD (720p)</option>
+                            <option value="1080p" selected>Full HD (1080p)</option>
+                            <option value="4K">4K UHD</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="video-quality"><i class="fas fa-tachometer-alt"></i> Quality:</label>
+                        <select id="video-quality">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high" selected>High</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="sequence-editor" class="panel-section">
+                    <div class="panel-header">
+                        <i class="fas fa-list-ol"></i>
+                        <h3>Image Sequence</h3>
+                    </div>
+                    <div class="sequence-controls">
+                        <button class="control-action" onclick="reorderImages('up')">
+                            <i class="fas fa-arrow-up"></i> Move Up
+                        </button>
+                        <button class="control-action" onclick="reorderImages('down')">
+                            <i class="fas fa-arrow-down"></i> Move Down
+                        </button>
+                        <button class="control-action text-danger" onclick="removeSelectedImage()">
+                            <i class="fas fa-trash-alt"></i> Remove
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div>
-                <label for="video-quality">Select Video Quality:</label>
-                <select id="video-quality">
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                </select>
+
+            <!-- Preview Section -->
+            <div id="preview-section" class="panel">
+                <div class="panel-header">
+                    <i class="fas fa-play-circle"></i>
+                    <h3>Preview Video</h3>
+                </div>
+                <div id="video-preview-container">
+                    <div id="video-preview" class="video-player">
+                        <div class="slideshow-container">
+                            <img id="slideshow-frame" src="/api/placeholder/640/360" alt="Preview Frame" />
+                            <div class="no-preview-overlay" id="no-preview-message">
+                                <i class="fas fa-images"></i>
+                                <p>Upload images to preview your video</p>
+                            </div>
+                        </div>
+                        
+                        <div class="video-controls-overlay">
+                            <div class="timeline-container">
+                                <div class="timeline">
+                                    <div class="progress-bar"></div>
+                                </div>
+                                <div class="time-display">00:00 / 00:30</div>
+                            </div>
+                            
+                            <div class="control-buttons">
+                                <button id="rewind-btn" class="control-btn" onclick="rewindVideo()">
+                                    <i class="fas fa-backward"></i>
+                                </button>
+                                <button id="play-btn" class="control-btn play-pause" onclick="togglePlayPause()">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <button id="next-btn" class="control-btn" onclick="nextFrame()">
+                                    <i class="fas fa-forward"></i>
+                                </button>
+                                <div class="volume-container">
+                                    <button class="control-btn" onclick="toggleMute()">
+                                        <i class="fas fa-volume-up"></i>
+                                    </button>
+                                    <div class="volume-slider">
+                                        <input type="range" min="0" max="100" value="80" />
+                                    </div>
+                                </div>
+                                <button class="control-btn fullscreen-btn" onclick="toggleFullscreen()">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="create-video-container">
+                    <button id="create-video-btn" class="create-btn">
+                        <i class="fas fa-magic"></i> Create Video
+                    </button>
+                </div>
             </div>
         </div>
     </section>
 
+    <!-- Individual Image Settings Template (Hidden initially) -->
+    <template id="image-card-template">
+        <div class="image-card" data-index="0">
+            <div class="image-card-preview">
+                <img src="" alt="Image Preview">
+                <div class="image-card-overlay">
+                    <div class="image-card-number">1</div>
+                    <div class="image-card-actions">
+                        <button class="card-action-btn select-btn" title="Select Image">
+                            <i class="fas fa-check-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="image-card-settings">
+                <div class="setting-mini">
+                    <label><i class="fas fa-clock"></i> Duration:</label>
+                    <div class="mini-slider-container">
+                        <input type="range" class="image-duration" min="1" max="10" value="3">
+                        <span class="duration-value">3s</span>
+                    </div>
+                </div>
+                <div class="setting-mini">
+                    <label><i class="fas fa-film"></i> Transition:</label>
+                    <select class="image-transition">
+                        <option value="none">None</option>
+                        <option value="fade" selected>Fade</option>
+                        <option value="slide">Slide</option>
+                        <option value="zoom">Zoom</option>
+                        <option value="blur">Blur</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </template>
+
     <script src="script.js"></script>
+    <script>
+        // Simulated images for the demo
+        const demoImages = [
+            '/api/placeholder/640/360',
+            '/api/placeholder/640/360',
+            '/api/placeholder/640/360',
+            '/api/placeholder/640/360'
+        ];
+        
+        // Image settings storage
+        const imageSettings = [];
+        let selectedImageIndex = -1;
+        
+        // Initialize demo images
+        function initDemoImages() {
+            demoImages.forEach((src, index) => {
+                addImageToGrid(src, index);
+                imageSettings.push({
+                    duration: 3,
+                    transition: 'fade'
+                });
+            });
+            
+            // Hide no preview message
+            document.getElementById('no-preview-message').style.display = 'none';
+        }
+        
+        // Add image to grid
+        function addImageToGrid(src, index) {
+            if (document.getElementById('show-individual-settings').checked) {
+                // Create card from template
+                const template = document.getElementById('image-card-template');
+                const card = document.importNode(template.content, true).querySelector('.image-card');
+                
+                // Set image and index
+                card.dataset.index = index;
+                card.querySelector('img').src = src;
+                card.querySelector('.image-card-number').textContent = index + 1;
+                
+                // Set initial values
+                const durationSlider = card.querySelector('.image-duration');
+                const durationValue = card.querySelector('.duration-value');
+                const transitionSelect = card.querySelector('.image-transition');
+                
+                durationSlider.value = imageSettings[index]?.duration || 3;
+                durationValue.textContent = `${durationSlider.value}s`;
+                transitionSelect.value = imageSettings[index]?.transition || 'fade';
+                
+                // Add event listeners
+                durationSlider.addEventListener('input', function() {
+                    durationValue.textContent = `${this.value}s`;
+                    imageSettings[index].duration = parseInt(this.value);
+                });
+                
+                transitionSelect.addEventListener('change', function() {
+                    imageSettings[index].transition = this.value;
+                });
+                
+                card.querySelector('.select-btn').addEventListener('click', function() {
+                    selectImage(index);
+                });
+                
+                document.getElementById('image-grid').appendChild(card);
+            } else {
+                // Simple image grid
+                const img = document.createElement('img');
+                img.src = src;
+                img.dataset.index = index;
+                img.addEventListener('click', function() {
+                    selectImage(index);
+                });
+                document.getElementById('image-grid').appendChild(img);
+            }
+        }
+        
+        // Toggle individual settings view
+        function toggleIndividualSettings() {
+            const showIndividual = document.getElementById('show-individual-settings').checked;
+            document.getElementById('image-grid').innerHTML = '';
+            
+            // Re-add all images with appropriate view
+            demoImages.forEach((src, index) => {
+                addImageToGrid(src, index);
+            });
+            
+            // Adjust grid container class
+            const gridContainer = document.getElementById('image-grid-container');
+            if (showIndividual) {
+                gridContainer.classList.add('individual-settings-mode');
+            } else {
+                gridContainer.classList.remove('individual-settings-mode');
+            }
+        }
+        
+        // Update global duration
+        function updateGlobalDuration(val) {
+            document.getElementById('global-duration-value').textContent = val + 's';
+        }
+        
+        // Update global transition
+        function updateGlobalTransition(val) {
+            // Just store the value, it will be applied when user clicks "Apply to All"
+        }
+        
+        // Apply global settings to all images
+        function applySettingsToAll() {
+            const duration = parseInt(document.getElementById('global-image-duration').value);
+            const transition = document.getElementById('global-transition-effect').value;
+            
+            // Update all image settings
+            imageSettings.forEach((settings, index) => {
+                settings.duration = duration;
+                settings.transition = transition;
+            });
+            
+            // Update UI if individual settings are shown
+            if (document.getElementById('show-individual-settings').checked) {
+                document.querySelectorAll('.image-card').forEach((card, index) => {
+                    const durationSlider = card.querySelector('.image-duration');
+                    const durationValue = card.querySelector('.duration-value');
+                    const transitionSelect = card.querySelector('.image-transition');
+                    
+                    durationSlider.value = duration;
+                    durationValue.textContent = `${duration}s`;
+                    transitionSelect.value = transition;
+                });
+            }
+            
+            // Show success message
+            showToast('Settings applied to all images');
+        }
+        
+        // Select an image
+        function selectImage(index) {
+            selectedImageIndex = index;
+            
+            // Update UI to show selected image
+            document.querySelectorAll('#image-grid .image-card, #image-grid img').forEach((item) => {
+                if (parseInt(item.dataset.index) === index) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+            
+            // Show the current image in the preview
+            document.getElementById('slideshow-frame').src = demoImages[index];
+            
+            // Update sequence editor to show current position
+            document.querySelector('.sequence-controls').setAttribute('data-selected', index);
+        }
+        
+        // Reorder images
+        function reorderImages(direction) {
+            if (selectedImageIndex === -1) {
+                showToast('Please select an image first');
+                return;
+            }
+            
+            if (direction === 'up' && selectedImageIndex > 0) {
+                // Swap with previous image
+                [demoImages[selectedImageIndex], demoImages[selectedImageIndex - 1]] = 
+                [demoImages[selectedImageIndex - 1], demoImages[selectedImageIndex]];
+                
+                [imageSettings[selectedImageIndex], imageSettings[selectedImageIndex - 1]] = 
+                [imageSettings[selectedImageIndex - 1], imageSettings[selectedImageIndex]];
+                
+                selectedImageIndex--;
+            } else if (direction === 'down' && selectedImageIndex < demoImages.length - 1) {
+                // Swap with next image
+                [demoImages[selectedImageIndex], demoImages[selectedImageIndex + 1]] = 
+                [demoImages[selectedImageIndex + 1], demoImages[selectedImageIndex]];
+                
+                [imageSettings[selectedImageIndex], imageSettings[selectedImageIndex + 1]] = 
+                [imageSettings[selectedImageIndex + 1], imageSettings[selectedImageIndex]];
+                
+                selectedImageIndex++;
+            }
+            
+            // Refresh the grid
+            document.getElementById('image-grid').innerHTML = '';
+            toggleIndividualSettings(); // This will re-add all images
+            
+            // Re-select the image at new position
+            selectImage(selectedImageIndex);
+        }
+        
+        // Remove selected image
+        function removeSelectedImage() {
+            if (selectedImageIndex === -1) {
+                showToast('Please select an image first');
+                return;
+            }
+            
+            // Remove image from arrays
+            demoImages.splice(selectedImageIndex, 1);
+            imageSettings.splice(selectedImageIndex, 1);
+            
+            // Refresh the grid
+            document.getElementById('image-grid').innerHTML = '';
+            toggleIndividualSettings(); // This will re-add all images
+            
+            // Reset selected index if we removed the last image
+            if (selectedImageIndex >= demoImages.length) {
+                selectedImageIndex = demoImages.length - 1;
+            }
+            
+            // If there are still images, select one
+            if (demoImages.length > 0) {
+                selectImage(selectedImageIndex);
+            } else {
+                selectedImageIndex = -1;
+                // Show no preview message
+                document.getElementById('no-preview-message').style.display = 'flex';
+            }
+        }
+        
+        // Toggle play/pause icon
+        function togglePlayPause() {
+            const playBtn = document.getElementById('play-btn');
+            if (playBtn.querySelector('i').classList.contains('fa-play')) {
+                playBtn.querySelector('i').classList.replace('fa-play', 'fa-pause');
+                // Call your play function here
+                playVideo();
+            } else {
+                playBtn.querySelector('i').classList.replace('fa-pause', 'fa-play');
+                // Call your pause function here
+                pauseVideo();
+            }
+        }
+        
+        // Placeholder video control functions
+        function playVideo() {
+            console.log('Play video');
+            // Start slideshow animation here
+        }
+        
+        function pauseVideo() {
+            console.log('Pause video');
+            // Pause slideshow animation here
+        }
+        
+        function rewindVideo() {
+            console.log('Rewind video');
+            // Reset to first frame
+            if (demoImages.length > 0) {
+                selectImage(0);
+            }
+        }
+        
+        function nextFrame() {
+            console.log('Next frame');
+            // Show next image
+            if (demoImages.length > 0) {
+                const nextIndex = (selectedImageIndex + 1) % demoImages.length;
+                selectImage(nextIndex);
+            }
+        }
+        
+        // Toggle fullscreen
+        function toggleFullscreen() {
+            const videoContainer = document.getElementById('video-preview');
+            if (!document.fullscreenElement) {
+                videoContainer.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        
+        // Toggle mute
+        function toggleMute() {
+            const volumeBtn = document.querySelector('.volume-container .control-btn i');
+            if (volumeBtn.classList.contains('fa-volume-up')) {
+                volumeBtn.classList.replace('fa-volume-up', 'fa-volume-mute');
+            } else {
+                volumeBtn.classList.replace('fa-volume-mute', 'fa-volume-up');
+            }
+        }
+        
+        // Display file name when audio file is selected
+        document.getElementById('background-music').addEventListener('change', function() {
+            const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
+            document.getElementById('music-file-name').textContent = fileName;
+        });
+        
+        // Show toast message
+        function showToast(message) {
+            // Create toast element if it doesn't exist
+            let toast = document.getElementById('toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'toast';
+                document.body.appendChild(toast);
+            }
+            
+            // Set message and show toast
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Initialize demo on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            initDemoImages();
+            // Select first image by default
+            if (demoImages.length > 0) {
+                selectImage(0);
+            }
+        });
+    </script>
 </body>
 
 </html>
