@@ -370,7 +370,6 @@ function togglePlayPause() {
     
     isPlaying = !isPlaying;
 }
-
 function playVideo() {
     if (imageSettings.length === 0) return;
     
@@ -383,7 +382,7 @@ function playVideo() {
     // Start from current image
     let index = selectedImageIndex >= 0 ? selectedImageIndex : 0;
     
-    // Play background music if available
+    // Handle background music
     const musicInput = document.getElementById('background-music');
     if (musicInput.files.length > 0) {
         const musicFile = musicInput.files[0];
@@ -391,16 +390,16 @@ function playVideo() {
         
         if (!backgroundMusic) {
             backgroundMusic = new Audio(musicURL);
-            backgroundMusic.loop = false; // Don't loop the audio
+        } else {
+            // Reset audio source if it's a different file
+            if (backgroundMusic.src !== musicURL) {
+                backgroundMusic.src = musicURL;
+            }
         }
         
         // Reset audio to beginning
         backgroundMusic.currentTime = 0;
-        
-        // Calculate total slideshow duration for music timing
-        const totalDuration = calculateTotalDuration();
-        
-        // If music is longer than slideshow, we'll handle stopping it in the slideshow loop
+        backgroundMusic.loop = false; // We'll handle looping manually
         
         backgroundMusic.play().catch(error => {
             console.error('Error playing audio:', error);
@@ -448,6 +447,14 @@ function playVideo() {
                 if (loopPlayback) {
                     // Loop back to beginning
                     index = 0;
+                    
+                    // Restart the audio from the beginning when looping
+                    if (backgroundMusic) {
+                        backgroundMusic.currentTime = 0;
+                        backgroundMusic.play().catch(error => {
+                            console.error('Error restarting audio:', error);
+                        });
+                    }
                 } else {
                     // Stop playback
                     pauseVideo();
@@ -469,7 +476,6 @@ function playVideo() {
     
     showNextImage();
 }
-
 function pauseVideo() {
     clearTimeout(slideshowInterval);
     
@@ -488,6 +494,7 @@ function rewindVideo() {
         selectImage(0);
     }
     
+    // Make sure to fully reset the audio
     if (backgroundMusic) {
         backgroundMusic.pause();
         backgroundMusic.currentTime = 0;
